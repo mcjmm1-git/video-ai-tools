@@ -98,13 +98,11 @@ cp .env.example .env
 docker compose build
 ```
 
-### Test first
-
-The example `.env` starts with a 20-second test:
+The example `.env` is configured for the **complete film by default**:
 
 ```env
-TEST_START=00:10:00
-TEST_DURATION=20
+TEST_START=00:00:00
+TEST_DURATION=0
 ```
 
 Run it:
@@ -114,14 +112,16 @@ docker compose up -d --force-recreate colorizar
 docker compose logs -f colorizar
 ```
 
-When the result looks good, switch to the complete film:
+### Optional short test
+
+Before committing to a full-length film, you can temporarily set a short test segment, for example:
 
 ```env
-TEST_START=00:00:00
-TEST_DURATION=0
+TEST_START=00:10:00
+TEST_DURATION=20
 ```
 
-Then run the service again.
+After checking the result, restore `TEST_DURATION=0` for the complete film.
 
 ### What the colorization pipeline does
 
@@ -169,7 +169,7 @@ For permanent services, create systemd units pointing `ttyd` to these scripts an
 - Do not run restoration and colorization simultaneously on the same GPU unless you intentionally want them to compete for GPU resources.
 - The first CMNET2 run downloads several model files and may take longer to start.
 - `spatial-correlation-sampler` is compiled inside the colorization image. The Dockerfile uses a CUDA **devel** image and disables pip build isolation for that package so it compiles against the same PyTorch/CUDA environment.
-- Test a short segment before committing to a full-length film.
+- Test a short segment first if you want to validate the look before processing a full-length film.
 
 ## Upstream projects
 
