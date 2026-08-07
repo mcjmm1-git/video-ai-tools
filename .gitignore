@@ -1,0 +1,25 @@
+# Local configuration
+.env
+**/.env
+
+# Video inputs and outputs
+**/input/*
+**/output/*
+!**/input/.gitkeep
+!**/output/.gitkeep
+
+# Colorization models/cache/work
+colorization/models/*
+colorization/cache/*
+colorization/work/*
+!colorization/models/.gitkeep
+!colorization/cache/.gitkeep
+!colorization/work/.gitkeep
+
+# Backups and temp files
+*.bak
+*.bak2
+*.log
+*.tmp
+__pycache__/
+*.pyc
