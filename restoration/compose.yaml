@@ -1,0 +1,102 @@
+services:
+  video2x:
+    image: ghcr.io/k4yt3x/video2x:6.4.0
+    container_name: video2x
+    restart: "no"
+
+    gpus: all
+
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      NVIDIA_DRIVER_CAPABILITIES: all
+      VK_LOADER_DRIVERS_SELECT: "*nvidia*"
+
+    volumes:
+      - ./input:/input:ro
+      - ./output:/output
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+    command:
+      - -i
+      - /input/${VIDEO_INPUT}
+      - -o
+      - /output/${VIDEO_RESTORED}
+      - -p
+      - realesrgan
+      - -s
+      - "${SCALE}"
+      - -d
+      - "${GPU:-0}"
+
+  subir-volumen:
+    image: lscr.io/linuxserver/ffmpeg:latest
+    container_name: subir-volumen
+    restart: "no"
+
+    volumes:
+      - ./input:/input:ro
+      - ./output:/output
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+    entrypoint:
+      - ffmpeg
+
+    command:
+      - -hide_banner
+      - -i
+      - /input/${AUDIO_INPUT}
+      - -map
+      - "0"
+      - -map_metadata
+      - "0"
+      - -map_chapters
+      - "0"
+      - -c:v
+      - copy
+      - -c:s
+      - copy
+      - -af
+      - "volume=${VOLUME}"
+      - -c:a
+      - aac
+      - -b:a
+      - "${AUDIO_BITRATE}"
+      - /output/${AUDIO_OUTPUT}
+
+  normalizar-audio:
+    image: lscr.io/linuxserver/ffmpeg:latest
+    container_name: normalizar-audio
+    restart: "no"
+
+    volumes:
+      - ./input:/input:ro
+      - ./output:/output
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+
+    entrypoint:
+      - ffmpeg
+
+    command:
+      - -hide_banner
+      - -i
+      - /input/${AUDIO_INPUT}
+      - -map
+      - "0"
+      - -map_metadata
+      - "0"
+      - -map_chapters
+      - "0"
+      - -c:v
+      - copy
+      - -c:s
+      - copy
+      - -af
+      - "loudnorm=I=${LOUDNESS}:LRA=11:TP=-1.5"
+      - -c:a
+      - aac
+      - -b:a
+      - "${AUDIO_BITRATE}"
+      - /output/${NORMALIZED_OUTPUT}
