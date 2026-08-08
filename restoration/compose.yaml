@@ -12,8 +12,8 @@ services:
       VK_LOADER_DRIVERS_SELECT: "*nvidia*"
 
     volumes:
-      - ./input:/input:ro
-      - ./output:/output
+      - /mnt/dd2/video-restoration/input:/input:ro
+      - /mnt/dd2/video-restoration/output:/output
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 
@@ -35,8 +35,8 @@ services:
     restart: "no"
 
     volumes:
-      - ./input:/input:ro
-      - ./output:/output
+      - /mnt/dd2/video-restoration/input:/input:ro
+      - /mnt/dd2/video-restoration/output:/output
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 
@@ -71,8 +71,8 @@ services:
     restart: "no"
 
     volumes:
-      - ./input:/input:ro
-      - ./output:/output
+      - /mnt/dd2/video-restoration/input:/input:ro
+      - /mnt/dd2/video-restoration/output:/output
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 
